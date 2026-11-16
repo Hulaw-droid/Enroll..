@@ -1,0 +1,2000 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Graduate Studies | Enrollee Management</title>
+
+<style>
+:root{
+    --navy:#142f50;
+    --navy2:#1c426b;
+    --blue:#2878bd;
+    --blue-light:#eaf4fd;
+    --bg:#f4f7fb;
+    --white:#fff;
+    --text:#26384c;
+    --muted:#8593a5;
+    --border:#e7edf3;
+    --green:#18845b;
+    --green-bg:#e8f6ef;
+    --orange:#bf7b25;
+    --orange-bg:#fff4e5;
+    --red:#d34d55;
+    --red-bg:#fff0f0;
+    --shadow:0 5px 22px rgba(25,55,85,.055);
+}
+*{box-sizing:border-box}
+body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:"Segoe UI",Arial,sans-serif;
+    font-size:14px;
+}
+button,input,select{font:inherit}
+button{cursor:pointer}
+button:focus-visible,input:focus-visible,select:focus-visible{
+    outline:3px solid #2878bd35;
+    outline-offset:2px;
+}
+
+/* SIDEBAR */
+.sidebar{
+    position:fixed;
+    inset:0 auto 0 0;
+    width:255px;
+    background:var(--navy);
+    color:white;
+    padding:23px 16px;
+    display:flex;
+    flex-direction:column;
+    z-index:200;
+    transition:transform .3s ease;
+}
+.brand{
+    display:flex;
+    align-items:center;
+    gap:12px;
+    padding:4px 8px 25px;
+    border-bottom:1px solid #ffffff20;
+}
+.logo{
+    width:45px;height:45px;
+    display:grid;place-items:center;
+    border-radius:13px;
+    background:#ffffff18;
+    border:1px solid #ffffff25;
+    font-size:17px;font-weight:800;
+}
+.brand h3{font-size:14px;margin:0;letter-spacing:.4px}
+.brand p{font-size:10px;color:#a9bfd5;margin:5px 0 0}
+.nav-label{
+    color:#8eaac5;
+    font-size:10px;
+    letter-spacing:1.2px;
+    font-weight:700;
+    padding:26px 12px 10px;
+}
+.nav-item{
+    display:flex;
+    align-items:center;
+    gap:13px;
+    padding:12px 13px;
+    margin:3px 0;
+    color:#c5d5e5;
+    font-size:13px;
+    border-radius:8px;
+    cursor:pointer;
+    transition:background .2s,color .2s,transform .2s;
+}
+.nav-item:hover{
+    background:#ffffff12;
+    color:white;
+    transform:translateX(2px);
+}
+.nav-item.active{
+    background:#ffffff1b;
+    color:white;
+    box-shadow:inset 3px 0 #70baff;
+}
+.nav-icon{width:21px;text-align:center;font-size:17px}
+.sidebar-bottom{
+    margin-top:auto;
+    padding:17px 9px 0;
+    border-top:1px solid #ffffff20;
+    color:#a6bbd0;
+    font-size:11px;
+    line-height:1.8;
+}
+
+/* MAIN */
+.main{margin-left:255px;min-height:100vh}
+.topbar{
+    height:72px;
+    background:white;
+    border-bottom:1px solid var(--border);
+    padding:0 32px;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    position:sticky;
+    top:0;
+    z-index:100;
+}
+.top-left{display:flex;align-items:center;gap:14px}
+.topbar h3{font-size:15px;margin:0}
+.topbar small{font-size:11px;color:var(--muted)}
+.top-right{display:flex;align-items:center;gap:17px}
+.admin{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    padding-left:17px;
+    border-left:1px solid var(--border);
+}
+.avatar{
+    width:36px;height:36px;
+    border-radius:50%;
+    display:grid;place-items:center;
+    background:var(--blue-light);
+    color:var(--blue);
+    font-weight:800;
+}
+.admin strong{font-size:12px}
+.admin small{display:block;margin-top:3px}
+.menu-btn{
+    display:none;
+    border:0;background:none;
+    color:var(--navy);
+    font-size:23px;
+}
+.content{
+    max-width:1600px;
+    margin:auto;
+    padding:29px 32px;
+}
+.page{display:none}
+.page.active{display:block;animation:pageIn .32s ease}
+@keyframes pageIn{
+    from{opacity:0;transform:translateY(9px)}
+    to{opacity:1;transform:translateY(0)}
+}
+
+/* BUTTONS AND HEADINGS */
+.heading{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    flex-wrap:wrap;
+    margin-bottom:23px;
+}
+.heading h1{
+    font-size:23px;
+    margin:0;
+    letter-spacing:-.4px;
+    color:#1b3654;
+}
+.heading p{
+    color:var(--muted);
+    font-size:12px;
+    margin:7px 0 0;
+}
+.btn{
+    border:1px solid transparent;
+    border-radius:7px;
+    padding:10px 15px;
+    font-size:12px;
+    font-weight:650;
+    transition:all .2s ease;
+}
+.btn:hover{transform:translateY(-2px)}
+.btn-primary{
+    background:var(--blue);
+    color:white;
+    box-shadow:0 3px 8px #2878bd22;
+}
+.btn-primary:hover{background:#1c639f}
+.btn-light{
+    background:white;
+    color:var(--text);
+    border-color:var(--border);
+}
+.btn-light:hover{background:#f5f8fb}
+.btn-danger{
+    color:var(--red);
+    background:var(--red-bg);
+    border-color:#f6dede;
+}
+.btn-success{
+    color:var(--green);
+    background:var(--green-bg);
+}
+
+/* DASHBOARD */
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,minmax(0,1fr));
+    gap:16px;
+    margin-bottom:20px;
+}
+.stat-card{
+    background:white;
+    padding:20px;
+    border:1px solid var(--border);
+    border-radius:11px;
+    box-shadow:var(--shadow);
+    transition:transform .25s,box-shadow .25s;
+    animation:cardIn .45s ease both;
+}
+.stat-card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 9px 27px rgba(25,55,85,.09);
+}
+@keyframes cardIn{
+    from{opacity:0;transform:translateY(12px)}
+    to{opacity:1;transform:translateY(0)}
+}
+.stat-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:17px;
+}
+.stat-icon{
+    width:40px;height:40px;
+    display:grid;place-items:center;
+    border-radius:11px;
+    font-size:18px;
+}
+.i-blue{background:#eaf2fd;color:#2878bd}
+.i-green{background:#e8f6ef;color:#18845b}
+.i-orange{background:#fff3e4;color:#bf7b25}
+.i-purple{background:#f1edff;color:#7959b5}
+.stat-top small{
+    font-size:9px;
+    font-weight:750;
+    color:var(--muted);
+    letter-spacing:.7px;
+}
+.stat-card h2{
+    font-size:29px;
+    margin:0;
+    color:#1b3654;
+}
+.stat-card p{
+    font-size:12px;
+    color:var(--muted);
+    margin:6px 0 0;
+}
+.dashboard-grid{
+    display:grid;
+    grid-template-columns:1.4fr 1fr;
+    gap:18px;
+}
+.panel{
+    background:white;
+    border:1px solid var(--border);
+    border-radius:11px;
+    padding:21px;
+    box-shadow:var(--shadow);
+    margin-bottom:19px;
+    min-width:0;
+}
+.panel-heading{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    gap:10px;
+    margin-bottom:18px;
+}
+.panel-heading h3{font-size:14px;margin:0}
+.panel-heading p{
+    font-size:11px;
+    color:var(--muted);
+    margin:5px 0 0;
+}
+.program-row{margin:17px 0}
+.program-info{
+    display:flex;
+    justify-content:space-between;
+    font-size:12px;
+    margin-bottom:8px;
+}
+.program-info span:last-child{color:var(--muted)}
+.progress{
+    height:8px;
+    background:#edf1f6;
+    border-radius:10px;
+    overflow:hidden;
+}
+.progress div{
+    height:100%;
+    border-radius:10px;
+    background:linear-gradient(90deg,#2878bd,#71b5e9);
+    transition:width .7s ease;
+}
+/* Dashboard program cards */
+.program-cards{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:13px;
+}
+.program-card{
+    position:relative;
+    overflow:hidden;
+    min-width:0;
+    padding:17px 18px;
+    border:1px solid var(--border);
+    border-radius:10px;
+    background:linear-gradient(145deg,#fff,#fbfdff);
+    box-shadow:0 4px 15px rgba(25,55,85,.045);
+    transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
+    animation:cardIn .4s ease both;
+}
+.program-card:hover{
+    transform:translateY(-3px);
+    border-color:#cbdff2;
+    box-shadow:0 9px 22px rgba(25,55,85,.09);
+}
+.program-card::after{
+    content:"";
+    position:absolute;
+    width:65px;height:65px;
+    right:-25px;bottom:-31px;
+    border-radius:50%;
+    background:#eaf4fd;
+}
+.program-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.program-card-name{font-size:12px;font-weight:800;letter-spacing:.45px;color:#49647f}
+.program-card-icon{
+    width:30px;height:30px;display:grid;place-items:center;
+    border-radius:8px;background:#eaf4fd;color:var(--blue);font-size:14px;
+}
+.program-card-count{font-size:27px;font-weight:750;line-height:1.2;color:#1b3654;margin-top:12px}
+.program-card-caption{font-size:10px;color:var(--muted);margin-top:4px}
+.program-total{
+    display:flex;align-items:center;justify-content:space-between;gap:15px;
+    margin-top:14px;padding:15px 17px;border-radius:9px;
+    background:#f0f6fc;border:1px solid #e0edf8;
+}
+.program-total-label{font-size:10px;font-weight:750;letter-spacing:.7px;color:#55718d}
+.program-total-value{font-size:25px;font-weight:800;color:var(--navy);line-height:1.2}
+.program-total-note{font-size:10px;color:var(--muted);margin-top:3px}
+.group-list{display:grid;gap:10px}
+.group-item{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    padding:12px;
+    background:#fafbfd;
+    border:1px solid var(--border);
+    border-radius:8px;
+    font-size:12px;
+}
+.group-item strong{color:var(--blue)}
+
+/* RECORDS */
+.toolbar{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:12px;
+    margin-bottom:16px;
+}
+.toolbar-actions{display:flex;gap:8px;flex-wrap:wrap}
+.search{
+    width:290px;
+    max-width:100%;
+    position:relative;
+}
+.search input{
+    width:100%;
+    padding:11px 12px 11px 36px;
+    border:1px solid var(--border);
+    border-radius:7px;
+    font-size:12px;
+    outline:none;
+}
+.search span{
+    position:absolute;
+    left:12px;top:9px;
+    color:var(--muted);
+    font-size:17px;
+}
+.filters{
+    display:flex;
+    flex-wrap:wrap;
+    gap:9px;
+    margin-bottom:17px;
+}
+.filters select,.filters input{
+    min-width:140px;
+    padding:10px;
+    background:white;
+    border:1px solid var(--border);
+    border-radius:7px;
+    color:var(--text);
+    font-size:12px;
+    outline:none;
+}
+.filters input{width:180px}
+.table-wrap{
+    width:100%;
+    overflow-x:auto;
+    border:1px solid var(--border);
+    border-radius:8px;
+}
+table{
+    width:100%;
+    min-width:930px;
+    border-collapse:collapse;
+}
+th{
+    padding:14px 12px;
+    text-align:left;
+    background:#f7f9fc;
+    color:#6e7f92;
+    font-size:10px;
+    letter-spacing:.55px;
+    font-weight:750;
+    white-space:nowrap;
+}
+td{
+    padding:13px 12px;
+    border-top:1px solid #edf0f4;
+    font-size:12px;
+    white-space:nowrap;
+}
+tbody tr{transition:background .2s}
+tbody tr:hover{background:#f7faff}
+tbody tr.selected{background:#edf5ff}
+.check{
+    width:16px;height:16px;
+    accent-color:var(--blue);
+    cursor:pointer;
+}
+.status{
+    display:inline-block;
+    padding:6px 10px;
+    border-radius:20px;
+    font-size:10px;
+    font-weight:700;
+}
+.thesis{background:#e8f6ef;color:#18845b}
+.non-thesis{background:#fff3e4;color:#bf7b25}
+.paid{background:#e8f6ef;color:#18845b}
+.not-paid{background:#fff0f0;color:#ce4c56}
+.row-actions{display:flex;gap:6px}
+.row-btn{
+    padding:7px 10px;
+    border:0;
+    border-radius:5px;
+    font-size:10px;
+    font-weight:700;
+    transition:.2s;
+}
+.row-btn:hover{filter:brightness(.96);transform:translateY(-1px)}
+.edit{background:#eaf2fc;color:#1763a6}
+.delete{background:#fff0f0;color:#d34d55}
+.archive{background:#fff5e8;color:#a96816}
+.restore{background:#e8f6ef;color:#18845b}
+.bulk{
+    display:none;
+    align-items:center;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:10px;
+    padding:12px 14px;
+    background:#edf5ff;
+    border:1px solid #d5e7f9;
+    border-radius:8px;
+    margin-bottom:14px;
+}
+.bulk.show{display:flex;animation:pageIn .2s}
+.bulk strong{font-size:12px;color:var(--blue)}
+.table-footer{
+    display:flex;
+    justify-content:space-between;
+    flex-wrap:wrap;
+    gap:8px;
+    padding-top:14px;
+    font-size:11px;
+    color:var(--muted);
+}
+.empty{
+    text-align:center;
+    color:var(--muted);
+    padding:35px!important;
+}
+
+/* FORM */
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:19px;
+}
+.field label{
+    display:block;
+    font-size:11px;
+    font-weight:700;
+    margin-bottom:8px;
+    color:#41556b;
+}
+.field input,.field select{
+    width:100%;
+    padding:12px;
+    border:1px solid #dfe6ee;
+    border-radius:7px;
+    background:white;
+    font-size:12px;
+    color:var(--text);
+    outline:none;
+    transition:border .2s,box-shadow .2s;
+}
+.field input:focus,.field select:focus{
+    border-color:var(--blue);
+    box-shadow:0 0 0 3px #2878bd16;
+}
+.field small{
+    display:block;
+    color:var(--muted);
+    font-size:10px;
+    margin-top:6px;
+}
+.form-note{
+    background:#f1f7fd;
+    color:#52718f;
+    padding:12px 14px;
+    border-radius:7px;
+    font-size:11px;
+    line-height:1.7;
+    margin-top:20px;
+}
+.form-actions{display:flex;gap:9px;margin-top:21px}
+
+/* MODAL */
+.overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    z-index:500;
+    background:#10253d80;
+    backdrop-filter:blur(3px);
+    align-items:center;
+    justify-content:center;
+    padding:18px;
+}
+.overlay.show{display:flex}
+.modal{
+    background:white;
+    width:100%;
+    max-width:440px;
+    padding:26px;
+    border-radius:13px;
+    box-shadow:0 20px 65px #0003;
+    animation:modalIn .25s ease;
+}
+@keyframes modalIn{
+    from{opacity:0;transform:scale(.95) translateY(10px)}
+    to{opacity:1;transform:scale(1) translateY(0)}
+}
+.modal h3{font-size:17px;margin:0 0 9px}
+.modal p{
+    font-size:12px;
+    color:var(--muted);
+    line-height:1.7;
+}
+.modal-actions{
+    display:flex;
+    justify-content:flex-end;
+    gap:9px;
+    margin-top:21px;
+}
+
+/* TOAST */
+.toast{
+    position:fixed;
+    bottom:24px;
+    right:24px;
+    z-index:1000;
+    background:#173d60;
+    color:white;
+    border-radius:8px;
+    padding:14px 19px;
+    font-size:12px;
+    box-shadow:0 8px 25px #10253d30;
+    opacity:0;
+    transform:translateY(14px);
+    transition:.3s;
+    pointer-events:none;
+}
+.toast.show{opacity:1;transform:translateY(0)}
+.footer{
+    text-align:center;
+    padding:20px;
+    color:var(--muted);
+    font-size:10px;
+}
+.mobile-overlay{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#07182b88;
+    z-index:150;
+}
+.mobile-overlay.show{display:block}
+
+/* RESPONSIVE */
+@media(max-width:1050px){
+    .stats{grid-template-columns:repeat(2,minmax(0,1fr))}
+    .dashboard-grid{grid-template-columns:1fr}
+    .program-cards{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media(max-width:750px){
+    .sidebar{transform:translateX(-100%)}
+    .sidebar.open{transform:translateX(0)}
+    .main{margin-left:0}
+    .menu-btn{display:block}
+    .topbar{padding:0 15px}
+    .content{padding:20px 15px}
+    .admin-info{display:none}
+    #topDate{display:none}
+    .form-grid{grid-template-columns:1fr}
+    .program-cards{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+    .program-card{padding:14px}
+    .program-card-count{font-size:24px}
+    .table-wrap{overflow:visible;border:0}
+    table{min-width:0;display:block}
+    thead{display:none}
+    tbody{display:grid;gap:12px}
+    tbody tr{
+        display:grid;
+        grid-template-columns:1fr 1fr;
+        background:white;
+        border:1px solid var(--border);
+        border-radius:9px;
+        padding:8px;
+        box-shadow:var(--shadow);
+    }
+    tbody tr:hover{background:white}
+    tbody tr.selected{background:#edf5ff}
+    td{
+        display:flex;
+        align-items:center;
+        justify-content:space-between;
+        gap:8px;
+        white-space:normal;
+        padding:9px 7px;
+        border:0;
+        min-width:0;
+        text-align:right;
+        overflow-wrap:anywhere;
+    }
+    td::before{
+        content:attr(data-label);
+        font-size:9px;
+        font-weight:750;
+        color:#8290a3;
+        text-align:left;
+        flex-shrink:0;
+    }
+    td.check-cell{
+        grid-column:1/-1;
+        justify-content:flex-start;
+    }
+    td.name-cell{font-weight:650}
+    td.action-cell{
+        grid-column:1/-1;
+        justify-content:flex-start;
+    }
+    .row-actions{justify-content:flex-end;flex-wrap:wrap}
+    .row-btn{padding:9px 13px}
+    .empty-cell{
+        grid-column:1/-1!important;
+        display:block!important;
+        text-align:center!important;
+    }
+    .empty-cell::before{display:none}
+}
+@media(max-width:450px){
+    .content{padding:16px 11px}
+    .panel{padding:14px}
+    .stats{gap:9px}
+    .stat-card{padding:13px}
+    .stat-card h2{font-size:24px}
+    .stat-card p{font-size:11px}
+    .program-cards{gap:8px}
+    .program-card{padding:12px}
+    .program-card-count{font-size:22px}
+    .program-total{padding:13px}
+    .filters{display:grid;grid-template-columns:1fr 1fr}
+    .filters select,.filters input{width:100%;min-width:0}
+    .search{width:100%}
+    .toolbar-actions{width:100%}
+    .toolbar-actions .btn{flex:1}
+    .heading h1{font-size:20px}
+    .heading>.btn{width:100%}
+    .toast{left:12px;right:12px;bottom:12px;text-align:center}
+}
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        animation-duration:.01ms!important;
+        transition-duration:.01ms!important;
+    }
+}
+@media print{
+    .sidebar,.topbar,.heading button,.toolbar,.filters,
+    .bulk,.row-actions,.footer,.mobile-overlay,.table-footer{
+        display:none!important;
+    }
+    .main{margin:0}
+    .content{padding:0}
+    .page{display:none!important}
+    #recordsPage{display:block!important}
+    .panel{box-shadow:none;border:0}
+    .table-wrap{overflow:visible}
+    table{min-width:0;display:table}
+    thead{display:table-header-group}
+    tbody{display:table-row-group}
+    tbody tr{display:table-row;box-shadow:none}
+    td,th{display:table-cell}
+    td::before{display:none}
+}
+</style>
+</head>
+
+<body>
+
+<div class="mobile-overlay" id="mobileOverlay" onclick="closeSidebar()"></div>
+
+<aside class="sidebar" id="sidebar">
+    <div class="brand">
+        <div class="logo">GS</div>
+        <div>
+            <h3>GRADUATE STUDIES</h3>
+            <p>ENROLLEE MANAGEMENT SYSTEM</p>
+        </div>
+    </div>
+
+    <div class="nav-label">MENU</div>
+    <div class="nav-item active" data-page="dashboard" onclick="navigate('dashboard')">
+        <span class="nav-icon">▦</span>Dashboard
+    </div>
+    <div class="nav-item" data-page="records" onclick="navigate('records')">
+        <span class="nav-icon">▤</span>Student Records
+    </div>
+
+    <div class="nav-label">MANAGEMENT</div>
+    <div class="nav-item" data-page="add" onclick="newStudent()">
+        <span class="nav-icon">＋</span>Add Student
+    </div>
+    <div class="nav-item" data-page="reports" onclick="navigate('reports')">
+        <span class="nav-icon">▥</span>Reports
+    </div>
+    <div class="nav-item" data-page="archive" onclick="navigate('archive')">
+        <span class="nav-icon">▣</span>Archive <span id="archiveNavCount" style="margin-left:auto;font-size:11px;opacity:.8">0</span>
+    </div>
+
+    <div class="sidebar-bottom">
+        <strong>GRADUATE STUDIES</strong><br>
+        Student Information Portal<br>
+        <span style="color:#7895b2">Administration System</span>
+    </div>
+</aside>
+
+<main class="main">
+<header class="topbar">
+    <div class="top-left">
+        <button class="menu-btn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+        <div>
+            <h3 id="topTitle">Dashboard</h3>
+            <small>Graduate Studies / Administration</small>
+        </div>
+    </div>
+    <div class="top-right">
+        <small id="topDate"></small>
+        <div class="admin">
+            <div class="avatar">A</div>
+            <div class="admin-info">
+                <strong>Administrator</strong>
+                <small>System User</small>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="content">
+
+<!-- DASHBOARD -->
+<section class="page active" id="dashboardPage">
+    <div class="heading">
+        <div>
+            <h1>Welcome to Graduate Studies!</h1>
+            <p>Here's an overview of your student records and payment information.</p>
+        </div>
+        <button class="btn btn-primary" onclick="newStudent()">＋ Add New Student</button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon i-blue">♙</div><small>ALL STUDENTS</small></div>
+            <h2 id="totalStat">0</h2>
+            <p>Total Enrollees</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon i-green">✓</div><small>PAYMENT</small></div>
+            <h2 id="paidStat">0</h2>
+            <p>Paid Students</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon i-orange">◷</div><small>PAYMENT</small></div>
+            <h2 id="unpaidStat">0</h2>
+            <p>Not Paid Students</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-top"><div class="stat-icon i-purple">▤</div><small>ACADEMIC STATUS</small></div>
+            <h2 id="thesisStat">0</h2>
+            <p>Thesis Students</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Program Distribution</h3>
+                <p>Enrollee count for each graduate program</p>
+            </div>
+        </div>
+        <div class="program-cards" id="programDistribution"></div>
+        <div class="program-total">
+            <div>
+                <div class="program-total-label">ALL PROGRAMS TOTAL</div>
+                <div class="program-total-note">Combined enrollees across all programs</div>
+            </div>
+            <div class="program-total-value" id="allProgramsTotal">0</div>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Extension Group Summary</h3>
+                <p>Extension groups will appear here once added.</p>
+            </div>
+        </div>
+        <div class="group-list" id="groupDistribution"></div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Recently Added Students</h3>
+                <p>Your latest student records</p>
+            </div>
+            <button class="btn btn-light" onclick="navigate('records')">View All →</button>
+        </div>
+        <div class="table-wrap">
+            <table style="min-width:650px">
+                <thead>
+                    <tr><th>STUDENT NAME</th><th>PROGRAM</th><th>ACADEMIC STATUS</th><th>PAYMENT</th></tr>
+                </thead>
+                <tbody id="recentTable"></tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<!-- STUDENT RECORDS -->
+<section class="page" id="recordsPage">
+    <div class="heading">
+        <div>
+            <h1>Student Records</h1>
+            <p>View, search, and manage all registered students.</p>
+        </div>
+        <button class="btn btn-primary" onclick="newStudent()">＋ Add Student</button>
+    </div>
+
+    <div class="panel">
+        <div class="toolbar">
+            <div class="search">
+                <span>⌕</span>
+                <input id="search" placeholder="Search student name..." oninput="renderTable()">
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn btn-light" onclick="exportCSV()">↓ Export Excel</button>
+                <button class="btn btn-light" onclick="printRecords()">Print Records</button>
+            </div>
+        </div>
+
+        <div class="filters">
+            <select id="filterProgram" onchange="renderTable()">
+                <option value="">All Programs</option>
+                <option>MSN</option><option>PhD</option><option>MPA</option>
+                <option>MBA</option><option>MSCJ</option><option>MAEd</option>
+            </select>
+
+            <select id="filterAcademic" onchange="renderTable()">
+                <option value="">All Academic Status</option>
+                <option>Thesis</option><option>Non-Thesis</option>
+            </select>
+
+            <select id="filterPayment" onchange="renderTable()">
+                <option value="">All Payment Status</option>
+                <option>Paid</option><option>Not Paid</option>
+            </select>
+
+            <input id="filterGroup" placeholder="Search extension group..." oninput="renderTable()">
+
+            <button class="btn btn-light" onclick="clearFilters()">Reset Filters</button>
+        </div>
+
+        <div class="bulk" id="bulkBar">
+            <strong id="selectedText">0 students selected</strong>
+            <div style="display:flex;gap:8px;flex-wrap:wrap">
+                <button class="btn btn-light" onclick="clearSelection()">Clear Selection</button>
+                <button class="btn btn-light" onclick="bulkArchive()">Archive Selected</button>
+                <button class="btn btn-danger" onclick="bulkDelete()">Delete Selected</button>
+            </div>
+        </div>
+
+        <div class="table-wrap">
+            <table>
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" class="check" id="selectAll" onchange="toggleAll(this.checked)" aria-label="Select all visible students"></th>
+                        <th>NO.</th>
+                        <th>STUDENT NAME</th>
+                        <th>PROGRAM</th>
+                        <th>ACADEMIC STATUS</th>
+                        <th>PAYMENT STATUS</th>
+                        <th>EXTENSION GROUP</th>
+                        <th>ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody id="recordTable"></tbody>
+            </table>
+        </div>
+
+        <div class="table-footer">
+            <span id="showingCount">Showing 0 students</span>
+            <span>Use the checkboxes to select multiple students.</span>
+        </div>
+    </div>
+</section>
+
+<!-- ADD / EDIT STUDENT -->
+<section class="page" id="addPage">
+    <div class="heading">
+        <div>
+            <h1 id="formHeading">Add New Student</h1>
+            <p>Fill in the information below to create a student record.</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <div>
+                <h3>Student Information</h3>
+                <p>Please complete all required fields.</p>
+            </div>
+        </div>
+
+        <form id="studentForm">
+            <div class="form-grid">
+                <div class="field">
+                    <label for="studentName">STUDENT NAME *</label>
+                    <input id="studentName" maxlength="150" required placeholder="Enter student's full name">
+                    <small>Enter the complete name of the student.</small>
+                </div>
+
+                <div class="field">
+                    <label for="program">PROGRAM *</label>
+                    <select id="program" required>
+                        <option value="">Select a program</option>
+                        <option>MSN</option>
+                        <option>PhD</option>
+                        <option>MPA</option>
+                        <option>MBA</option>
+                        <option>MSCJ</option>
+                        <option>MAEd</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="academicStatus">ACADEMIC STATUS *</label>
+                    <select id="academicStatus" required>
+                        <option value="">Select academic status</option>
+                        <option>Thesis</option>
+                        <option>Non-Thesis</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="paymentStatus">PAYMENT STATUS *</label>
+                    <select id="paymentStatus" required>
+                        <option value="">Select payment status</option>
+                        <option>Paid</option>
+                        <option>Not Paid</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="extensionGroup">EXTENSION GROUP</label>
+                    <input id="extensionGroup" maxlength="100" placeholder="Type extension group">
+                    <small>Enter any group name. You can change it anytime.</small>
+                </div>
+            </div>
+
+            <div class="form-note">
+                <strong>Friendly reminder:</strong> Please check the student's name, program, academic status, and payment status before saving.
+            </div>
+
+            <div class="form-actions">
+                <button class="btn btn-primary" type="submit" id="saveButton">Save Student</button>
+                <button class="btn btn-light" type="button" onclick="cancelForm()">Cancel</button>
+            </div>
+        </form>
+    </div>
+</section>
+
+<!-- REPORTS -->
+<section class="page" id="reportsPage">
+    <div class="heading">
+        <div>
+            <h1>Reports & Statistics</h1>
+            <p>A summary of student enrolment and payment records.</p>
+        </div>
+        <button class="btn btn-primary" onclick="exportCSV()">↓ Export Report</button>
+    </div>
+
+    <div class="stats">
+        <div class="stat-card">
+            <div class="stat-icon i-blue">♙</div>
+            <h2 id="reportTotal">0</h2><p>Total Enrollees</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon i-green">✓</div>
+            <h2 id="reportPaid">0</h2><p>Paid</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon i-orange">◷</div>
+            <h2 id="reportUnpaid">0</h2><p>Not Paid</p>
+        </div>
+        <div class="stat-card">
+            <div class="stat-icon i-purple">▤</div>
+            <h2 id="reportThesis">0</h2><p>Thesis Students</p>
+        </div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <div><h3>Program Summary</h3><p>Number of students enrolled in each program</p></div>
+        </div>
+        <div id="reportDistribution"></div>
+    </div>
+
+    <div class="panel">
+        <div class="panel-heading">
+            <div><h3>Payment Summary</h3><p>Current payment status of all students</p></div>
+        </div>
+        <div id="paymentSummary"></div>
+    </div>
+</section>
+
+<!-- ARCHIVED STUDENTS -->
+<section class="page" id="archivePage">
+    <div class="heading">
+        <div>
+            <h1>Archived Students</h1>
+            <p>View archived student records and restore them whenever needed.</p>
+        </div>
+    </div>
+    <div class="panel">
+        <div class="toolbar">
+            <div class="search">
+                <span>⌕</span>
+                <input id="archiveSearch" placeholder="Search archived student name..." oninput="renderArchive()">
+            </div>
+            <div class="toolbar-actions">
+                <button class="btn btn-light" onclick="emptyArchiveSearch()">Clear Search</button>
+            </div>
+        </div>
+        <div class="table-wrap">
+            <table>
+                <thead><tr><th>NO.</th><th>STUDENT NAME</th><th>PROGRAM</th><th>ACADEMIC STATUS</th><th>PAYMENT STATUS</th><th>EXTENSION GROUP</th><th>ACTIONS</th></tr></thead>
+                <tbody id="archiveTable"></tbody>
+            </table>
+        </div>
+        <div class="table-footer"><span id="archiveCount">0 archived students</span><span>Restoring a student returns the record to Student Records.</span></div>
+    </div>
+</section>
+
+</div>
+
+<div class="footer">Graduate Studies | Enrollee Management System</div>
+</main>
+
+<!-- CONFIRMATION MODAL -->
+<div class="overlay" id="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+    <div class="modal">
+        <div id="modalIcon" style="font-size:27px;margin-bottom:14px">⚠️</div>
+        <h3 id="modalTitle">Confirm Action</h3>
+        <p id="modalMessage">Are you sure you want to continue?</p>
+        <div class="modal-actions">
+            <button class="btn btn-light" onclick="closeModal()">Cancel</button>
+            <button class="btn btn-primary" id="confirmBtn">Confirm</button>
+        </div>
+    </div>
+</div>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+"use strict";
+
+// =====================================
+// SETTINGS AND SUPABASE DATA
+// =====================================
+
+const SUPABASE_URL = "https://dieuyvlfashpypzpaaao.supabase.co";
+const SUPABASE_ANON_KEY = "sb_publishable_19KZYJPpniGgPcJnxAaWGw_FHPoFmFe";
+const PROGRAMS = ["MSN","PhD","MPA","MBA","MSCJ","MAEd"];
+
+const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+let records = [];
+let selected = new Set();
+let editId = null;
+let pendingAction = null;
+let toastTimer = null;
+let realtimeChannel = null;
+
+function createId(){
+    return window.crypto && crypto.randomUUID
+        ? crypto.randomUUID()
+        : Date.now().toString(36)+Math.random().toString(36).slice(2);
+}
+
+function fromDatabase(row){
+    return {
+        id:row.id,
+        name:row.name,
+        program:row.program,
+        status:row.academic_status,
+        payment:row.payment_status,
+        extension:row.extension_group || "",
+        archived:row.archived===true
+    };
+}
+
+function toDatabase(student){
+    return {
+        name:student.name,
+        program:student.program,
+        academic_status:student.status,
+        payment_status:student.payment,
+        extension_group:student.extension || "",
+        archived:student.archived===true,
+        updated_at:new Date().toISOString()
+    };
+}
+
+async function loadData(showMessage=false){
+    setConnectionStatus("Connecting...", false);
+    const {data,error}=await supabaseClient
+        .from("students")
+        .select("id,name,program,academic_status,payment_status,extension_group,archived,created_at,updated_at")
+        .order("created_at",{ascending:true});
+    if(error){
+        setConnectionStatus("Connection error", false);
+        console.error("Supabase load error:",error);
+        showToast("Unable to load online records: "+error.message);
+        return false;
+    }
+    records=(data||[]).map(fromDatabase).filter(r=>
+        r && typeof r.id==="string" && typeof r.name==="string" &&
+        PROGRAMS.includes(r.program) && ["Thesis","Non-Thesis"].includes(r.status)
+    );
+    setConnectionStatus("Online · Synced", true);
+    refreshAll();
+    if(showMessage)showToast("Records refreshed from Supabase.");
+    return true;
+}
+
+function setConnectionStatus(message,online){
+    // Keep the original interface unchanged; connection state is logged only.
+    console.info("Supabase:",message);
+}
+
+async function insertStudent(student){
+    const {error}=await supabaseClient.from("students").insert(toDatabase(student));
+    if(error)throw error;
+}
+async function updateStudentInDatabase(id,changes){
+    const {error}=await supabaseClient.from("students").update(toDatabase(changes)).eq("id",id);
+    if(error)throw error;
+}
+async function deleteStudentFromDatabase(id){
+    const {error}=await supabaseClient.from("students").delete().eq("id",id);
+    if(error)throw error;
+}
+
+function startRealtimeSync(){
+    if(realtimeChannel)return;
+    realtimeChannel=supabaseClient.channel("public-students-changes")
+        .on("postgres_changes",{event:"*",schema:"public",table:"students"},()=>loadData(false))
+        .subscribe(status=>{
+            if(status==="SUBSCRIBED")setConnectionStatus("Online · Live sync",true);
+            if(status==="CHANNEL_ERROR"||status==="TIMED_OUT")setConnectionStatus("Sync unavailable",false);
+        });
+    window.addEventListener("online",()=>loadData(false));
+    window.addEventListener("offline",()=>setConnectionStatus("Offline",false));
+    // Fallback refresh in case realtime is temporarily unavailable.
+    setInterval(()=>{if(navigator.onLine)loadData(false);},30000);
+}
+
+// =====================================
+// NAVIGATION
+// =====================================
+
+const titles={
+    dashboard:"Dashboard",
+    records:"Student Records",
+    add:"Student Information",
+    reports:"Reports & Statistics",
+    archive:"Archived Students"
+};
+
+function navigate(page){
+    const target=document.getElementById(page+"Page");
+    if(!target)return;
+
+    document.querySelectorAll(".page").forEach(p=>p.classList.remove("active"));
+    target.classList.add("active");
+
+    document.querySelectorAll(".nav-item").forEach(item=>{
+        item.classList.toggle("active",item.dataset.page===page);
+    });
+
+    document.getElementById("topTitle").textContent=titles[page];
+    closeSidebar();
+
+    if(page==="dashboard"||page==="reports")updateDashboard();
+    if(page==="records")renderTable();
+    if(page==="archive")renderArchive();
+}
+
+function newStudent(){
+    resetForm();
+    navigate("add");
+}
+
+function toggleSidebar(){
+    document.getElementById("sidebar").classList.toggle("open");
+    document.getElementById("mobileOverlay").classList.toggle("show");
+}
+
+function closeSidebar(){
+    document.getElementById("sidebar").classList.remove("open");
+    document.getElementById("mobileOverlay").classList.remove("show");
+}
+
+// =====================================
+// DATE
+// =====================================
+
+document.getElementById("topDate").textContent=
+    new Date().toLocaleDateString("en-PH",{
+        month:"short",day:"numeric",year:"numeric"
+    });
+
+// =====================================
+// TOAST AND MODAL
+// =====================================
+
+function showToast(message){
+    const el=document.getElementById("toast");
+    el.textContent=message;
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(()=>el.classList.remove("show"),2800);
+}
+
+function showModal(title,message,callback,button="Confirm",icon="⚠️"){
+    document.getElementById("modalTitle").textContent=title;
+    document.getElementById("modalMessage").textContent=message;
+    document.getElementById("modalIcon").textContent=icon;
+    document.getElementById("confirmBtn").textContent=button;
+    pendingAction=callback;
+    document.getElementById("modal").classList.add("show");
+    document.getElementById("confirmBtn").focus();
+}
+
+function closeModal(){
+    document.getElementById("modal").classList.remove("show");
+    pendingAction=null;
+}
+
+document.getElementById("confirmBtn").addEventListener("click",()=>{
+    const action=pendingAction;
+    closeModal();
+    if(action)action();
+});
+
+document.getElementById("modal").addEventListener("click",e=>{
+    if(e.target.id==="modal")closeModal();
+});
+
+document.addEventListener("keydown",e=>{
+    if(e.key==="Escape"){
+        closeModal();
+        closeSidebar();
+    }
+});
+
+// =====================================
+// FORM: ADD AND EDIT
+// =====================================
+
+const form=document.getElementById("studentForm");
+
+form.addEventListener("submit",e=>{
+    e.preventDefault();
+
+    const name=document.getElementById("studentName").value.trim();
+    const program=document.getElementById("program").value;
+    const status=document.getElementById("academicStatus").value;
+    const payment=document.getElementById("paymentStatus").value;
+    const extension=document.getElementById("extensionGroup").value.trim();
+
+    if(!name||!program||!status||!payment){
+        showToast("Please complete all required fields.");
+        return;
+    }
+
+    const duplicate=records.find(r=>
+        r.id!==editId &&
+        r.name.trim().toLowerCase()===name.toLowerCase() &&
+        r.program===program &&
+        r.extension.trim().toLowerCase()===extension.toLowerCase()
+    );
+
+    const student={
+        id:editId||createId(),
+        name,program,status,payment,extension
+    };
+
+    if(duplicate){
+        showModal(
+            "Possible Duplicate Student",
+            "A student with the same name, program, and extension group already exists. Would you still like to add this record?",
+            ()=>saveStudent(student),
+            "Add Anyway",
+            "⚠️"
+        );
+        return;
+    }
+
+    if(editId){
+        showModal(
+            "Update Student Information",
+            "Would you like to save the changes to this student's record?",
+            ()=>saveStudent(student),
+            "Update Student",
+            "✏️"
+        );
+    }else{
+        showModal(
+            "Save New Student",
+            "Please confirm that you want to add this student to the records.",
+            ()=>saveStudent(student),
+            "Save Student",
+            "👤"
+        );
+    }
+});
+
+async function saveStudent(student){
+    const wasEditing=Boolean(editId);
+    try{
+        if(wasEditing){
+            await updateStudentInDatabase(editId,student);
+        }else{
+            await insertStudent(student);
+        }
+        selected.clear();
+        resetForm();
+        await loadData(false);
+        navigate("records");
+        showToast(wasEditing
+            ?"Student information updated successfully."
+            :"New student added successfully.");
+    }catch(error){
+        console.error("Save student error:",error);
+        showToast("Unable to save student: "+error.message);
+    }
+}
+
+function resetForm(){
+    form.reset();
+    editId=null;
+    document.getElementById("formHeading").textContent="Add New Student";
+    document.getElementById("saveButton").textContent="Save Student";
+}
+
+function cancelForm(){
+    resetForm();
+    navigate("dashboard");
+}
+
+function editStudent(id){
+    const r=records.find(x=>x.id===id);
+    if(!r)return;
+
+    editId=id;
+    document.getElementById("studentName").value=r.name;
+    document.getElementById("program").value=r.program;
+    document.getElementById("academicStatus").value=r.status;
+    document.getElementById("paymentStatus").value=r.payment;
+    document.getElementById("extensionGroup").value=r.extension;
+
+    document.getElementById("formHeading").textContent="Edit Student Information";
+    document.getElementById("saveButton").textContent="Update Student";
+    navigate("add");
+}
+
+// =====================================
+// FILTERING AND SEARCH
+// =====================================
+
+function activeRecords(){
+    return records.filter(r=>!r.archived);
+}
+
+function archivedRecords(){
+    return records.filter(r=>r.archived);
+}
+
+function filteredRecords(){
+    const search=document.getElementById("search").value.trim().toLowerCase();
+    const program=document.getElementById("filterProgram").value;
+    const academic=document.getElementById("filterAcademic").value;
+    const payment=document.getElementById("filterPayment").value;
+    const group=document.getElementById("filterGroup").value.trim().toLowerCase();
+
+    return activeRecords().filter(r=>
+        r.name.toLowerCase().includes(search) &&
+        (!program||r.program===program) &&
+        (!academic||r.status===academic) &&
+        (!payment||r.payment===payment) &&
+        (!group||r.extension.toLowerCase().includes(group))
+    );
+}
+
+function clearFilters(){
+    ["search","filterProgram","filterAcademic","filterPayment","filterGroup"]
+        .forEach(id=>document.getElementById(id).value="");
+    renderTable();
+}
+
+// =====================================
+// TABLE HELPERS
+// =====================================
+
+function makeCell(label,value,className=""){
+    const td=document.createElement("td");
+    td.dataset.label=label;
+    if(className)td.className=className;
+
+    if(value instanceof Node)td.appendChild(value);
+    else td.textContent=String(value);
+
+    return td;
+}
+
+function makeBadge(value,type){
+    const badge=document.createElement("span");
+    badge.className="status "+type;
+    badge.textContent=value;
+    return badge;
+}
+
+function renderTable(){
+    const body=document.getElementById("recordTable");
+    body.replaceChildren();
+
+    const list=filteredRecords();
+
+    list.forEach(r=>{
+        const tr=document.createElement("tr");
+        if(selected.has(r.id))tr.classList.add("selected");
+
+        const checkbox=document.createElement("input");
+        checkbox.type="checkbox";
+        checkbox.className="check";
+        checkbox.checked=selected.has(r.id);
+        checkbox.setAttribute("aria-label","Select "+r.name);
+
+        checkbox.addEventListener("change",()=>{
+            checkbox.checked?selected.add(r.id):selected.delete(r.id);
+            renderTable();
+        });
+
+        tr.appendChild(makeCell("Select",checkbox,"check-cell"));
+        tr.appendChild(makeCell("No.",records.indexOf(r)+1));
+        tr.appendChild(makeCell("Student Name",r.name,"name-cell"));
+        tr.appendChild(makeCell("Program",r.program));
+        tr.appendChild(makeCell("Academic Status",
+            makeBadge(r.status,r.status==="Thesis"?"thesis":"non-thesis")));
+        tr.appendChild(makeCell("Payment Status",
+            makeBadge(r.payment,r.payment==="Paid"?"paid":"not-paid")));
+        tr.appendChild(makeCell("Extension Group",r.extension||"—"));
+
+        const edit=document.createElement("button");
+        edit.className="row-btn edit";
+        edit.textContent="Edit";
+        edit.onclick=()=>editStudent(r.id);
+
+        const archive=document.createElement("button");
+        archive.className="row-btn archive";
+        archive.textContent="Archive";
+        archive.onclick=()=>archiveStudent(r.id);
+
+        const del=document.createElement("button");
+        del.className="row-btn delete";
+        del.textContent="Delete";
+        del.onclick=()=>deleteStudent(r.id);
+
+        const actions=document.createElement("div");
+        actions.className="row-actions";
+        actions.append(edit,archive,del);
+
+        tr.appendChild(makeCell("Actions",actions,"action-cell"));
+        body.appendChild(tr);
+    });
+
+    if(!list.length){
+        const tr=document.createElement("tr");
+        const td=document.createElement("td");
+        td.colSpan=8;
+        td.className="empty empty-cell";
+        td.textContent=activeRecords().length
+            ?"No matching students found. Try changing your search or filters."
+            :"No student records yet. Select Add Student to get started.";
+        tr.appendChild(td);
+        body.appendChild(tr);
+    }
+
+    document.getElementById("showingCount").textContent=
+        "Showing "+list.length+" of "+activeRecords().length+" students";
+
+    updateSelection(list);
+}
+
+// =====================================
+// SELECT ALL AND BULK DELETE
+// =====================================
+
+function toggleAll(checked){
+    filteredRecords().forEach(r=>{
+        if(checked)selected.add(r.id);
+        else selected.delete(r.id);
+    });
+    renderTable();
+}
+
+function updateSelection(list){
+    const count=list.filter(r=>selected.has(r.id)).length;
+    const all=document.getElementById("selectAll");
+
+    all.checked=list.length>0&&count===list.length;
+    all.indeterminate=count>0&&count<list.length;
+
+    document.getElementById("bulkBar").classList.toggle("show",selected.size>0);
+    document.getElementById("selectedText").textContent=
+        selected.size+" student(s) selected";
+}
+
+function clearSelection(){
+    selected.clear();
+    renderTable();
+}
+
+function bulkDelete(){
+    if(!selected.size)return;
+    const ids=[...selected];
+    const count=ids.length;
+    showModal("Delete Selected Students",
+        "You are about to permanently delete "+count+" selected student records. Do you want to continue?",
+        async ()=>{
+            try{
+                const {error}=await supabaseClient.from("students").delete().in("id",ids);
+                if(error)throw error;
+                selected.clear();
+                await loadData(false);
+                showToast(count+" student records deleted.");
+            }catch(error){console.error(error);showToast("Unable to delete records: "+error.message);}
+        },"Delete Selected","🗑️");
+}
+
+// =====================================
+// ARCHIVE AND RESTORE STUDENTS
+// =====================================
+
+function archiveStudent(id){
+    const student=records.find(r=>r.id===id&&!r.archived);
+    if(!student)return;
+    showModal("Archive Student","Move "+student.name+" to the archive? You can restore this record later.",async ()=>{
+        try{await updateStudentInDatabase(id,{...student,archived:true});selected.delete(id);await loadData(false);showToast("Student record archived successfully.");}
+        catch(error){console.error(error);showToast("Unable to archive student: "+error.message);}
+    },"Archive Student","▣");
+}
+
+function bulkArchive(){
+    if(!selected.size)return;
+    const ids=[...selected];
+    const count=ids.length;
+    showModal("Archive Selected Students","Move "+count+" selected student record(s) to the archive? You can restore them later.",async ()=>{
+        try{
+            const {error}=await supabaseClient.from("students").update({archived:true,updated_at:new Date().toISOString()}).in("id",ids);
+            if(error)throw error;
+            selected.clear();await loadData(false);showToast(count+" student record(s) archived.");
+        }catch(error){console.error(error);showToast("Unable to archive records: "+error.message);}
+    },"Archive Selected","▣");
+}
+
+function renderArchive(){
+    const body=document.getElementById("archiveTable");
+    if(!body)return;
+    body.replaceChildren();
+    const query=(document.getElementById("archiveSearch")?.value||"").trim().toLowerCase();
+    const list=archivedRecords().filter(r=>r.name.toLowerCase().includes(query));
+    list.forEach((r,index)=>{
+        const tr=document.createElement("tr");
+        tr.appendChild(makeCell("No.",index+1));
+        tr.appendChild(makeCell("Student Name",r.name,"name-cell"));
+        tr.appendChild(makeCell("Program",r.program));
+        tr.appendChild(makeCell("Academic Status",makeBadge(r.status,r.status==="Thesis"?"thesis":"non-thesis")));
+        tr.appendChild(makeCell("Payment Status",makeBadge(r.payment,r.payment==="Paid"?"paid":"not-paid")));
+        tr.appendChild(makeCell("Extension Group",r.extension||"—"));
+        const restore=document.createElement("button");
+        restore.className="row-btn restore";
+        restore.textContent="Restore";
+        restore.onclick=()=>restoreStudent(r.id);
+        const del=document.createElement("button");
+        del.className="row-btn delete";
+        del.textContent="Delete Permanently";
+        del.onclick=()=>permanentlyDeleteArchived(r.id);
+        const actions=document.createElement("div");
+        actions.className="row-actions";
+        actions.append(restore,del);
+        tr.appendChild(makeCell("Actions",actions,"action-cell"));
+        body.appendChild(tr);
+    });
+    if(!list.length){
+        const tr=document.createElement("tr");
+        const td=document.createElement("td");
+        td.colSpan=7;
+        td.className="empty empty-cell";
+        td.textContent=archivedRecords().length?"No matching archived students found.":"No archived students yet.";
+        tr.appendChild(td);
+        body.appendChild(tr);
+    }
+    document.getElementById("archiveCount").textContent="Showing "+list.length+" of "+archivedRecords().length+" archived students";
+    document.getElementById("archiveNavCount").textContent=archivedRecords().length;
+}
+
+function emptyArchiveSearch(){
+    document.getElementById("archiveSearch").value="";
+    renderArchive();
+}
+
+function restoreStudent(id){
+    const student=records.find(r=>r.id===id&&r.archived);
+    if(!student)return;
+    showModal("Restore Student","Restore "+student.name+" to the active Student Records?",async ()=>{
+        try{await updateStudentInDatabase(id,{...student,archived:false});await loadData(false);showToast("Student record restored successfully.");}
+        catch(error){console.error(error);showToast("Unable to restore student: "+error.message);}
+    },"Restore Student","↶");
+}
+
+function permanentlyDeleteArchived(id){
+    const student=records.find(r=>r.id===id&&r.archived);
+    if(!student)return;
+    showModal("Delete Archived Student","Permanently delete "+student.name+"? This action cannot be undone.",async ()=>{
+        try{await deleteStudentFromDatabase(id);await loadData(false);showToast("Archived student permanently deleted.");}
+        catch(error){console.error(error);showToast("Unable to delete student: "+error.message);}
+    },"Delete Permanently","🗑️");
+}
+
+// =====================================
+// DELETE ONE STUDENT
+// =====================================
+
+function deleteStudent(id){
+    const student=records.find(r=>r.id===id);
+    if(!student)return;
+    showModal("Delete Student","Are you sure you want to delete "+student.name+"'s record? This action cannot be undone.",async ()=>{
+        try{await deleteStudentFromDatabase(id);selected.delete(id);await loadData(false);showToast("Student record deleted successfully.");}
+        catch(error){console.error(error);showToast("Unable to delete student: "+error.message);}
+    },"Delete Student","🗑️");
+}
+
+// =====================================
+// DASHBOARD AND REPORTS
+// =====================================
+
+function updateDashboard(){
+    const current=activeRecords();
+    const total=current.length;
+    const paid=current.filter(r=>r.payment==="Paid").length;
+    const unpaid=current.filter(r=>r.payment==="Not Paid").length;
+    const thesis=current.filter(r=>r.status==="Thesis").length;
+
+    const values={
+        totalStat:total,
+        paidStat:paid,
+        unpaidStat:unpaid,
+        thesisStat:thesis,
+        reportTotal:total,
+        reportPaid:paid,
+        reportUnpaid:unpaid,
+        reportThesis:thesis
+    };
+
+    Object.entries(values).forEach(([id,value])=>{
+        document.getElementById(id).textContent=value;
+    });
+
+    renderProgramDistribution("programDistribution");
+    renderProgramDistribution("reportDistribution");
+    renderGroups();
+    renderRecent();
+    renderPaymentSummary();
+}
+
+function renderProgramDistribution(targetId){
+    const current=activeRecords();
+    const target=document.getElementById(targetId);
+    target.replaceChildren();
+
+    let programTotal=0;
+
+    PROGRAMS.forEach((program,index)=>{
+        const count=current.filter(r=>r.program===program).length;
+        programTotal+=count;
+
+        // Dashboard uses individual program boxes; Reports keeps its compact bars.
+        if(targetId==="programDistribution"){
+            const card=document.createElement("div");
+            card.className="program-card";
+            card.style.animationDelay=(index*55)+"ms";
+
+            const top=document.createElement("div");
+            top.className="program-card-top";
+
+            const name=document.createElement("span");
+            name.className="program-card-name";
+            name.textContent=program;
+
+            const icon=document.createElement("span");
+            icon.className="program-card-icon";
+            icon.textContent="▤";
+            top.append(name,icon);
+
+            const number=document.createElement("div");
+            number.className="program-card-count";
+            number.textContent=count;
+
+            const caption=document.createElement("div");
+            caption.className="program-card-caption";
+            caption.textContent=count===1?"Enrollee":"Enrollees";
+
+            card.append(top,number,caption);
+            target.appendChild(card);
+            return;
+        }
+
+        const percent=current.length?count/current.length*100:0;
+        const row=document.createElement("div");
+        row.className="program-row";
+        const info=document.createElement("div");
+        info.className="program-info";
+        const name=document.createElement("strong");
+        name.textContent=program;
+        const number=document.createElement("span");
+        number.textContent=count+" students";
+        info.append(name,number);
+        const bar=document.createElement("div");
+        bar.className="progress";
+        const fill=document.createElement("div");
+        fill.style.width=percent+"%";
+        bar.appendChild(fill);
+        row.append(info,bar);
+        target.appendChild(row);
+    });
+
+    if(targetId==="programDistribution"){
+        document.getElementById("allProgramsTotal").textContent=programTotal;
+    }
+}
+
+function renderGroups(){
+    const target=document.getElementById("groupDistribution");
+    target.replaceChildren();
+
+    const groups=new Map();
+
+    activeRecords().forEach(r=>{
+        const name=(r.extension||"").trim();
+        // Keep this section empty until an extension group is actually assigned.
+        if(!name) return;
+        groups.set(name,(groups.get(name)||0)+1);
+    });
+
+    if(!groups.size){
+        const empty=document.createElement("div");
+        empty.className="empty";
+        empty.textContent="No Extension Groups Yet. Groups will appear here once added.";
+        target.appendChild(empty);
+        return;
+    }
+
+    [...groups.entries()]
+        .sort((a,b)=>a[0].localeCompare(b[0]))
+        .forEach(([name,count])=>{
+            const item=document.createElement("div");
+            item.className="group-item";
+
+            const label=document.createElement("span");
+            label.textContent=name;
+
+            const total=document.createElement("strong");
+            total.textContent=count;
+
+            item.append(label,total);
+            target.appendChild(item);
+        });
+}
+
+function renderRecent(){
+    const body=document.getElementById("recentTable");
+    body.replaceChildren();
+
+    const recent=activeRecords().slice(-5).reverse();
+
+    if(!recent.length){
+        const tr=document.createElement("tr");
+        const td=document.createElement("td");
+        td.colSpan=4;
+        td.className="empty";
+        td.textContent="No student records available yet.";
+        tr.appendChild(td);
+        body.appendChild(tr);
+        return;
+    }
+
+    recent.forEach(r=>{
+        const tr=document.createElement("tr");
+        tr.appendChild(makeCell("Student Name",r.name));
+        tr.appendChild(makeCell("Program",r.program));
+        tr.appendChild(makeCell("Academic Status",
+            makeBadge(r.status,r.status==="Thesis"?"thesis":"non-thesis")));
+        tr.appendChild(makeCell("Payment Status",
+            makeBadge(r.payment,r.payment==="Paid"?"paid":"not-paid")));
+        body.appendChild(tr);
+    });
+}
+
+function renderPaymentSummary(){
+    const current=activeRecords();
+    const target=document.getElementById("paymentSummary");
+    target.replaceChildren();
+
+    const paid=current.filter(r=>r.payment==="Paid").length;
+    const unpaid=current.filter(r=>r.payment==="Not Paid").length;
+    const total=current.length;
+
+    [
+        {label:"Paid",count:paid,color:"#18845b"},
+        {label:"Not Paid",count:unpaid,color:"#d34d55"}
+    ].forEach(item=>{
+        const row=document.createElement("div");
+        row.className="program-row";
+
+        const info=document.createElement("div");
+        info.className="program-info";
+
+        const name=document.createElement("strong");
+        name.textContent=item.label;
+
+        const number=document.createElement("span");
+        number.textContent=item.count+" students";
+
+        info.append(name,number);
+
+        const bar=document.createElement("div");
+        bar.className="progress";
+
+        const fill=document.createElement("div");
+        fill.style.width=(total?item.count/total*100:0)+"%";
+        fill.style.background=item.color;
+
+        bar.appendChild(fill);
+        row.append(info,bar);
+        target.appendChild(row);
+    });
+}
+
+// =====================================
+// CSV EXPORT
+// =====================================
+
+function exportCSV(){
+    const current=activeRecords();
+    if(!current.length){
+        showToast("There are no student records to export.");
+        return;
+    }
+
+    const headers=[
+        "NO.","STUDENT NAME","PROGRAM",
+        "ACADEMIC STATUS","PAYMENT STATUS","EXTENSION GROUP"
+    ];
+
+    const rows=current.map((r,i)=>[
+        i+1,r.name,r.program,r.status,r.payment,r.extension
+    ]);
+
+    const csv=[headers,...rows].map(row=>
+        row.map(value=>'"'+String(value).replace(/"/g,'""')+'"').join(",")
+    ).join("\r\n");
+
+    const blob=new Blob(["\uFEFF"+csv],{
+        type:"text/csv;charset=utf-8"
+    });
+
+    const url=URL.createObjectURL(blob);
+    const link=document.createElement("a");
+
+    link.href=url;
+    link.download="Graduate_Studies_Student_Records.csv";
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+
+    setTimeout(()=>URL.revokeObjectURL(url),1000);
+    showToast("Student records exported successfully.");
+}
+
+function printRecords(){
+    navigate("records");
+    setTimeout(()=>window.print(),150);
+}
+
+// =====================================
+// REFRESH
+// =====================================
+
+function refreshAll(){
+    renderTable();
+    updateDashboard();
+    renderArchive();
+}
+
+// =====================================
+// START SYSTEM
+// =====================================
+
+(async function initializeSystem(){
+    refreshAll();
+    await loadData(false);
+    startRealtimeSync();
+})();
+</script>
+</body>
+</html>
