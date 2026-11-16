@@ -605,7 +605,12 @@ tbody tr.selected{background:#edf5ff}
     font-size:12px;
     color:var(--text);
     outline:none;
-    resize:vertical;
+    resize:none;
+    overflow:hidden;
+    min-height:95px;
+    height:95px;
+    box-sizing:border-box;
+    line-height:1.6;
     transition:border .2s,box-shadow .2s;
 }
 .field input:focus,.field select:focus,.field textarea:focus{
@@ -817,6 +822,45 @@ tbody tr.selected{background:#edf5ff}
     td,th{display:table-cell}
     td::before{display:none}
 }
+
+
+/* WALKING CAT ANIMATION */
+.cat-walker{
+    position:fixed;
+    left:-75px;
+    bottom:8px;
+    z-index:120;
+    pointer-events:none;
+    animation:catWalkAcross 28s linear infinite;
+}
+
+.cat-bob{
+    font-size:38px;
+    line-height:1;
+    display:block;
+    transform:scaleX(-1);
+    animation:catBounce .38s ease-in-out infinite alternate;
+    filter:drop-shadow(0 3px 2px rgba(0,0,0,.15));
+}
+
+@keyframes catWalkAcross{
+    from{transform:translateX(0)}
+    to{transform:translateX(calc(100vw + 100px))}
+}
+
+@keyframes catBounce{
+    from{transform:scaleX(-1) translateY(0)}
+    to{transform:scaleX(-1) translateY(-5px)}
+}
+
+@media(prefers-reduced-motion:reduce){
+    .cat-walker{
+        animation:none;
+        left:15px;
+    }
+    .cat-bob{animation:none}
+}
+
 </style>
 </head>
 
@@ -1025,8 +1069,7 @@ tbody tr.selected{background:#edf5ff}
                         <th>ACADEMIC STATUS</th>
                         <th>PAYMENT STATUS</th>
                         <th>EXTENSION GROUP</th>
-                        <th>TRIMESTER</th>
-                        <th>NOTE</th>
+                        <th>ACTIONS</th>
                     </tr>
                 </thead>
                 <tbody id="recordTable"></tbody>
@@ -1114,7 +1157,7 @@ tbody tr.selected{background:#edf5ff}
 
                 <div class="field">
                     <label for="studentNote">NOTE</label>
-                    <textarea id="studentNote" maxlength="1000" placeholder="Enter any additional note (optional)"></textarea>
+                    <textarea id="studentNote" placeholder="Enter any additional note (optional)"></textarea>
                     <small>Optional remarks or additional information about the student.</small>
                 </div>
             </div>
@@ -1219,6 +1262,12 @@ tbody tr.selected{background:#edf5ff}
             <button class="btn btn-primary" id="confirmBtn">Confirm</button>
         </div>
     </div>
+</div>
+
+
+<!-- CUTE WALKING CAT -->
+<div class="cat-walker" aria-hidden="true">
+    <span class="cat-bob">🐈</span>
 </div>
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
@@ -1435,6 +1484,14 @@ document.addEventListener("keydown",e=>{
 // =====================================
 
 const form=document.getElementById("studentForm");
+const studentNoteField=document.getElementById("studentNote");
+
+// Automatically expand the NOTE field downward as more text is entered.
+function resizeStudentNote(){
+    studentNoteField.style.height="95px";
+    studentNoteField.style.height=Math.max(95,studentNoteField.scrollHeight)+"px";
+}
+studentNoteField.addEventListener("input",resizeStudentNote);
 
 form.addEventListener("submit",e=>{
     e.preventDefault();
@@ -1517,6 +1574,7 @@ async function saveStudent(student){
 
 function resetForm(){
     form.reset();
+    studentNoteField.style.height="95px";
     editId=null;
     document.getElementById("formHeading").textContent="Add New Student";
     document.getElementById("saveButton").textContent="Save Student";
@@ -1539,6 +1597,7 @@ function editStudent(id){
     document.getElementById("extensionGroup").value=r.extension;
     document.getElementById("trimester").value=r.trimester||"";
     document.getElementById("studentNote").value=r.note||"";
+    resizeStudentNote();
 
     document.getElementById("formHeading").textContent="Edit Student Information";
     document.getElementById("saveButton").textContent="Update Student";
