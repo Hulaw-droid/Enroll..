@@ -583,7 +583,7 @@ tbody tr.selected{background:#edf5ff}
     margin-bottom:8px;
     color:#41556b;
 }
-.field input,.field select{
+.field input,.field select,.field textarea{
     width:100%;
     padding:12px;
     border:1px solid #dfe6ee;
@@ -594,7 +594,21 @@ tbody tr.selected{background:#edf5ff}
     outline:none;
     transition:border .2s,box-shadow .2s;
 }
-.field input:focus,.field select:focus{
+.field textarea{
+    width:100%;
+    min-height:95px;
+    padding:12px;
+    border:1px solid #dfe6ee;
+    border-radius:7px;
+    background:white;
+    font:inherit;
+    font-size:12px;
+    color:var(--text);
+    outline:none;
+    resize:vertical;
+    transition:border .2s,box-shadow .2s;
+}
+.field input:focus,.field select:focus,.field textarea:focus{
     border-color:var(--blue);
     box-shadow:0 0 0 3px #2878bd16;
 }
@@ -1086,6 +1100,22 @@ tbody tr.selected{background:#edf5ff}
                     <input id="extensionGroup" maxlength="100" placeholder="Type extension group">
                     <small>Enter any group name. You can change it anytime.</small>
                 </div>
+
+                <div class="field">
+                    <label for="trimester">TRIMESTER</label>
+                    <select id="trimester">
+                        <option value="">Select trimester</option>
+                        <option>1st Trimester</option>
+                        <option>2nd Trimester</option>
+                        <option>3rd Trimester</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="studentNote">NOTE</label>
+                    <textarea id="studentNote" maxlength="1000" placeholder="Enter any additional note (optional)"></textarea>
+                    <small>Optional remarks or additional information about the student.</small>
+                </div>
             </div>
 
             <div class="form-note">
@@ -1164,7 +1194,7 @@ tbody tr.selected{background:#edf5ff}
         </div>
         <div class="table-wrap">
             <table>
-                <thead><tr><th>NO.</th><th>STUDENT NAME</th><th>PROGRAM</th><th>ACADEMIC STATUS</th><th>PAYMENT STATUS</th><th>EXTENSION GROUP</th><th>ACTIONS</th></tr></thead>
+                <thead><tr><th>NO.</th><th>STUDENT NAME</th><th>PROGRAM</th><th>ACADEMIC STATUS</th><th>PAYMENT STATUS</th><th>EXTENSION GROUP</th><th>TRIMESTER</th><th>NOTE</th><th>ACTIONS</th></tr></thead>
                 <tbody id="archiveTable"></tbody>
             </table>
         </div>
@@ -1226,6 +1256,8 @@ function fromDatabase(row){
         status:row.academic_status,
         payment:row.payment_status,
         extension:row.extension_group || "",
+        trimester:row.trimester || "",
+        note:row.note || "",
         archived:row.archived===true
     };
 }
@@ -1237,6 +1269,8 @@ function toDatabase(student){
         academic_status:student.status,
         payment_status:student.payment,
         extension_group:student.extension || "",
+        trimester:student.trimester || "",
+        note:student.note || "",
         archived:student.archived===true,
         updated_at:new Date().toISOString()
     };
@@ -1246,7 +1280,7 @@ async function loadData(showMessage=false){
     setConnectionStatus("Connecting...", false);
     const {data,error}=await supabaseClient
         .from("students")
-        .select("id,name,program,academic_status,payment_status,extension_group,archived,created_at,updated_at")
+        .select("id,name,program,academic_status,payment_status,extension_group,trimester,note,archived,created_at,updated_at")
         .order("created_at",{ascending:true});
     if(error){
         setConnectionStatus("Connection error", false);
@@ -1409,6 +1443,8 @@ form.addEventListener("submit",e=>{
     const status=document.getElementById("academicStatus").value;
     const payment=document.getElementById("paymentStatus").value;
     const extension=document.getElementById("extensionGroup").value.trim();
+    const trimester=document.getElementById("trimester").value;
+    const note=document.getElementById("studentNote").value.trim();
 
     if(!name||!program||!status||!payment){
         showToast("Please complete all required fields.");
@@ -1424,7 +1460,7 @@ form.addEventListener("submit",e=>{
 
     const student={
         id:editId||createId(),
-        name,program,status,payment,extension
+        name,program,status,payment,extension,trimester,note
     };
 
     if(duplicate){
@@ -1500,6 +1536,8 @@ function editStudent(id){
     document.getElementById("academicStatus").value=r.status;
     document.getElementById("paymentStatus").value=r.payment;
     document.getElementById("extensionGroup").value=r.extension;
+    document.getElementById("trimester").value=r.trimester||"";
+    document.getElementById("studentNote").value=r.note||"";
 
     document.getElementById("formHeading").textContent="Edit Student Information";
     document.getElementById("saveButton").textContent="Update Student";
@@ -1601,6 +1639,8 @@ function renderTable(){
         tr.appendChild(makeCell("Payment Status",
             makeBadge(r.payment,r.payment==="Paid"?"paid":"not-paid")));
         tr.appendChild(makeCell("Extension Group",r.extension||"—"));
+        tr.appendChild(makeCell("Trimester",r.trimester||"—"));
+        tr.appendChild(makeCell("Note",r.note||"—"));
 
         const edit=document.createElement("button");
         edit.className="row-btn edit";
@@ -1628,7 +1668,7 @@ function renderTable(){
     if(!list.length){
         const tr=document.createElement("tr");
         const td=document.createElement("td");
-        td.colSpan=8;
+        td.colSpan=10;
         td.className="empty empty-cell";
         td.textContent=activeRecords().length
             ?"No matching students found. Try changing your search or filters."
@@ -1729,6 +1769,8 @@ function renderArchive(){
         tr.appendChild(makeCell("Academic Status",makeBadge(r.status,r.status==="Thesis"?"thesis":"non-thesis")));
         tr.appendChild(makeCell("Payment Status",makeBadge(r.payment,r.payment==="Paid"?"paid":"not-paid")));
         tr.appendChild(makeCell("Extension Group",r.extension||"—"));
+        tr.appendChild(makeCell("Trimester",r.trimester||"—"));
+        tr.appendChild(makeCell("Note",r.note||"—"));
         const restore=document.createElement("button");
         restore.className="row-btn restore";
         restore.textContent="Restore";
@@ -1746,7 +1788,7 @@ function renderArchive(){
     if(!list.length){
         const tr=document.createElement("tr");
         const td=document.createElement("td");
-        td.colSpan=7;
+        td.colSpan=9;
         td.className="empty empty-cell";
         td.textContent=archivedRecords().length?"No matching archived students found.":"No archived students yet.";
         tr.appendChild(td);
@@ -2011,11 +2053,11 @@ function exportCSV(){
 
     const headers=[
         "NO.","STUDENT NAME","PROGRAM",
-        "ACADEMIC STATUS","PAYMENT STATUS","EXTENSION GROUP"
+        "ACADEMIC STATUS","PAYMENT STATUS","EXTENSION GROUP","TRIMESTER","NOTE"
     ];
 
     const rows=current.map((r,i)=>[
-        i+1,r.name,r.program,r.status,r.payment,r.extension
+        i+1,r.name,r.program,r.status,r.payment,r.extension,r.trimester||"",r.note||""
     ]);
 
     const csv=[headers,...rows].map(row=>
