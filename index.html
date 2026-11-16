@@ -519,6 +519,14 @@ tbody tr.selected{background:#edf5ff}
 .non-thesis{background:#fff3e4;color:#bf7b25}
 .paid{background:#e8f6ef;color:#18845b}
 .not-paid{background:#fff0f0;color:#ce4c56}
+
+/* Program colors in Student Records */
+.program-msn{background:#e8f6ee;color:#176b43}
+.program-phd{background:#e8f2ff;color:#205b9d}
+.program-mpa{background:#f1f3f6;color:#42536a;border:1px solid #dfe5ec}
+.program-mba{background:#fff4c7;color:#80620a}
+.program-mscj{background:#fff0f0;color:#a8323b}
+.program-maed{background:#e5f7ff;color:#176b91}
 .row-actions{display:flex;gap:6px}
 .row-btn{
     padding:7px 10px;
@@ -1578,7 +1586,16 @@ function renderTable(){
         tr.appendChild(makeCell("Select",checkbox,"check-cell"));
         tr.appendChild(makeCell("No.",records.indexOf(r)+1));
         tr.appendChild(makeCell("Student Name",r.name,"name-cell"));
-        tr.appendChild(makeCell("Program",r.program));
+        const programClass={
+            "MSN":"program-msn",
+            "PhD":"program-phd",
+            "MPA":"program-mpa",
+            "MBA":"program-mba",
+            "MSCJ":"program-mscj",
+            "MAEd":"program-maed"
+        }[r.program]||"";
+        tr.appendChild(makeCell("Program",
+            makeBadge(r.program,programClass)));
         tr.appendChild(makeCell("Academic Status",
             makeBadge(r.status,r.status==="Thesis"?"thesis":"non-thesis")));
         tr.appendChild(makeCell("Payment Status",
