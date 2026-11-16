@@ -353,6 +353,9 @@ button:focus-visible,input:focus-visible,select:focus-visible{
     box-shadow:0 4px 15px rgba(25,55,85,.045);
     transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
     animation:cardIn .4s ease both;
+
+    /* ADDED: indicate that program boxes are clickable */
+    cursor:pointer;
 }
 
 /* Individual program box colors */
@@ -410,6 +413,10 @@ button:focus-visible,input:focus-visible,select:focus-visible{
     border-color:#cbdff2;
     box-shadow:0 9px 22px rgba(25,55,85,.09);
 }
+.program-card:focus-visible{
+    outline:3px solid #2878bd55;
+    outline-offset:3px;
+}
 .program-card::after{
     content:"";
     position:absolute;
@@ -417,6 +424,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{
     right:-25px;bottom:-31px;
     border-radius:50%;
     background:#eaf4fd;
+    pointer-events:none;
 }
 .program-card-top{display:flex;align-items:center;justify-content:space-between;gap:8px}
 .program-card-name{font-size:12px;font-weight:800;letter-spacing:.45px;color:#49647f}
@@ -1680,6 +1688,19 @@ function clearFilters(){
     renderTable();
 }
 
+/* ADDED: Open Student Records filtered by the selected dashboard program */
+function openProgramRecords(program){
+    document.getElementById("search").value="";
+    document.getElementById("filterProgram").value=program;
+    document.getElementById("filterAcademic").value="";
+    document.getElementById("filterPayment").value="";
+    document.getElementById("filterGroup").value="";
+
+    selected.clear();
+
+    navigate("records");
+}
+
 // =====================================
 // TABLE HELPERS
 // =====================================
@@ -1995,6 +2016,23 @@ function renderProgramDistribution(targetId){
             const card=document.createElement("div");
             card.className="program-card program-"+program.toLowerCase();
             card.style.animationDelay=(index*55)+"ms";
+
+            /* ADDED: make each program box accessible and clickable */
+            card.setAttribute("role","button");
+            card.setAttribute("tabindex","0");
+            card.setAttribute("aria-label","View "+program+" student records");
+            card.title="Click to view "+program+" student records";
+
+            card.addEventListener("click",()=>{
+                openProgramRecords(program);
+            });
+
+            card.addEventListener("keydown",event=>{
+                if(event.key==="Enter"||event.key===" "){
+                    event.preventDefault();
+                    openProgramRecords(program);
+                }
+            });
 
             const top=document.createElement("div");
             top.className="program-card-top";
