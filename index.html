@@ -111,6 +111,17 @@ button:focus-visible,input:focus-visible,select:focus-visible{
 
 /* MAIN */
 .main{margin-left:255px;min-height:100vh}
+
+/* DESKTOP SIDEBAR HIDE/SHOW */
+@media(min-width:751px){
+    body.sidebar-hidden .sidebar{
+        transform:translateX(-100%);
+    }
+    body.sidebar-hidden .main{
+        margin-left:0;
+    }
+}
+
 .topbar{
     height:72px;
     background:white;
@@ -144,12 +155,20 @@ button:focus-visible,input:focus-visible,select:focus-visible{
 }
 .admin strong{font-size:12px}
 .admin small{display:block;margin-top:3px}
+
+/* SIDEBAR TOGGLE BUTTON */
 .menu-btn{
-    display:none;
-    border:0;background:none;
+    display:block;
+    border:0;
+    background:none;
     color:var(--navy);
     font-size:23px;
+    padding:5px 8px;
+    border-radius:6px;
+    cursor:pointer;
 }
+.menu-btn:hover{background:#eaf2fc}
+
 .content{
     max-width:1600px;
     margin:auto;
@@ -316,6 +335,7 @@ button:focus-visible,input:focus-visible,select:focus-visible{
     background:linear-gradient(90deg,#2878bd,#71b5e9);
     transition:width .7s ease;
 }
+
 /* Dashboard program cards */
 .program-cards{
     display:grid;
@@ -823,7 +843,6 @@ tbody tr.selected{background:#edf5ff}
     td::before{display:none}
 }
 
-
 /* WALKING CAT ANIMATION */
 .cat-walker{
     position:fixed;
@@ -833,7 +852,6 @@ tbody tr.selected{background:#edf5ff}
     pointer-events:none;
     animation:catWalkAcross 28s linear infinite;
 }
-
 .cat-bob{
     font-size:38px;
     line-height:1;
@@ -842,17 +860,14 @@ tbody tr.selected{background:#edf5ff}
     animation:catBounce .38s ease-in-out infinite alternate;
     filter:drop-shadow(0 3px 2px rgba(0,0,0,.15));
 }
-
 @keyframes catWalkAcross{
     from{transform:translateX(0)}
     to{transform:translateX(calc(100vw + 100px))}
 }
-
 @keyframes catBounce{
     from{transform:scaleX(-1) translateY(0)}
     to{transform:scaleX(-1) translateY(-5px)}
 }
-
 @media(prefers-reduced-motion:reduce){
     .cat-walker{
         animation:none;
@@ -860,7 +875,6 @@ tbody tr.selected{background:#edf5ff}
     }
     .cat-bob{animation:none}
 }
-
 </style>
 </head>
 
@@ -906,7 +920,12 @@ tbody tr.selected{background:#edf5ff}
 <main class="main">
 <header class="topbar">
     <div class="top-left">
-        <button class="menu-btn" onclick="toggleSidebar()" aria-label="Open menu">☰</button>
+        <button class="menu-btn"
+                id="sidebarToggle"
+                onclick="toggleSidebar()"
+                aria-label="Hide sidebar"
+                title="Hide or show sidebar"
+                aria-expanded="true">☰</button>
         <div>
             <h3 id="topTitle">Dashboard</h3>
             <small>Graduate Studies / Administration</small>
@@ -1265,7 +1284,6 @@ tbody tr.selected{background:#edf5ff}
     </div>
 </div>
 
-
 <!-- CUTE WALKING CAT -->
 <div class="cat-walker" aria-hidden="true">
     <span class="cat-bob">🐈</span>
@@ -1417,14 +1435,37 @@ function newStudent(){
     navigate("add");
 }
 
+/* UPDATED SIDEBAR TOGGLE: DESKTOP AND MOBILE */
 function toggleSidebar(){
-    document.getElementById("sidebar").classList.toggle("open");
-    document.getElementById("mobileOverlay").classList.toggle("show");
+    const sidebar=document.getElementById("sidebar");
+    const overlay=document.getElementById("mobileOverlay");
+    const button=document.getElementById("sidebarToggle");
+
+    if(window.innerWidth<=750){
+        const opening=!sidebar.classList.contains("open");
+        sidebar.classList.toggle("open",opening);
+        overlay.classList.toggle("show",opening);
+        button.setAttribute("aria-expanded",String(opening));
+        button.setAttribute("aria-label",opening?"Close menu":"Open menu");
+    }else{
+        const hidden=document.body.classList.toggle("sidebar-hidden");
+        button.setAttribute("aria-expanded",String(!hidden));
+        button.setAttribute("aria-label",hidden?"Show sidebar":"Hide sidebar");
+    }
 }
 
 function closeSidebar(){
-    document.getElementById("sidebar").classList.remove("open");
-    document.getElementById("mobileOverlay").classList.remove("show");
+    const sidebar=document.getElementById("sidebar");
+    const overlay=document.getElementById("mobileOverlay");
+    const button=document.getElementById("sidebarToggle");
+
+    sidebar.classList.remove("open");
+    overlay.classList.remove("show");
+
+    if(window.innerWidth<=750){
+        button.setAttribute("aria-expanded","false");
+        button.setAttribute("aria-label","Open menu");
+    }
 }
 
 // =====================================
