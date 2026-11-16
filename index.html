@@ -334,6 +334,57 @@ button:focus-visible,input:focus-visible,select:focus-visible{
     transition:transform .22s ease,box-shadow .22s ease,border-color .22s ease;
     animation:cardIn .4s ease both;
 }
+
+/* Individual program box colors */
+.program-card.program-msn{
+    background:linear-gradient(145deg,#e8f6ee,#d5efdf);
+    border-color:#b8dfc7;
+}
+.program-card.program-phd{
+    background:linear-gradient(145deg,#e8f2ff,#d5e7ff);
+    border-color:#b9d3f5;
+}
+.program-card.program-mpa{
+    background:linear-gradient(145deg,#fff,#f7f9fc);
+    border-color:#dfe5ec;
+}
+.program-card.program-mba{
+    background:linear-gradient(145deg,#fff8d9,#ffefad);
+    border-color:#eadb8b;
+}
+.program-card.program-mscj{
+    background:linear-gradient(145deg,#fff0f0,#fbdada);
+    border-color:#efbcbc;
+}
+.program-card.program-maed{
+    background:linear-gradient(145deg,#e5f7ff,#cfefff);
+    border-color:#addcf0;
+}
+.program-card.program-msn .program-card-name,
+.program-card.program-msn .program-card-count{color:#176b43}
+.program-card.program-phd .program-card-name,
+.program-card.program-phd .program-card-count{color:#205b9d}
+.program-card.program-mpa .program-card-name,
+.program-card.program-mpa .program-card-count{color:#42536a}
+.program-card.program-mba .program-card-name,
+.program-card.program-mba .program-card-count{color:#80620a}
+.program-card.program-mscj .program-card-name,
+.program-card.program-mscj .program-card-count{color:#a8323b}
+.program-card.program-maed .program-card-name,
+.program-card.program-maed .program-card-count{color:#176b91}
+.program-card.program-msn .program-card-icon{background:#c8e8d4;color:#176b43}
+.program-card.program-phd .program-card-icon{background:#c9defb;color:#205b9d}
+.program-card.program-mpa .program-card-icon{background:#e9edf2;color:#42536a}
+.program-card.program-mba .program-card-icon{background:#f6e7a0;color:#80620a}
+.program-card.program-mscj .program-card-icon{background:#f4caca;color:#a8323b}
+.program-card.program-maed .program-card-icon{background:#bfe8fa;color:#176b91}
+.program-card.program-msn::after{background:#bfe2cc}
+.program-card.program-phd::after{background:#bfd8f8}
+.program-card.program-mpa::after{background:#e9edf2}
+.program-card.program-mba::after{background:#f4e49b}
+.program-card.program-mscj::after{background:#f0c1c1}
+.program-card.program-maed::after{background:#b9e5f7}
+
 .program-card:hover{
     transform:translateY(-3px);
     border-color:#cbdff2;
@@ -1771,7 +1822,7 @@ function renderProgramDistribution(targetId){
         // Dashboard uses individual program boxes; Reports keeps its compact bars.
         if(targetId==="programDistribution"){
             const card=document.createElement("div");
-            card.className="program-card";
+            card.className="program-card program-"+program.toLowerCase();
             card.style.animationDelay=(index*55)+"ms";
 
             const top=document.createElement("div");
