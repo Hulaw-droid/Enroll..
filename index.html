@@ -639,8 +639,38 @@ tbody tr.selected{background:#edf5ff}
     height:95px;
     box-sizing:border-box;
     line-height:1.6;
+    white-space:pre-wrap;
+    overflow-wrap:anywhere;
+    word-break:normal;
     transition:border .2s,box-shadow .2s;
 }
+
+/* NOTE column: show only the first word until clicked. */
+.note-cell{
+    white-space:nowrap !important;
+    max-width:120px;
+    overflow:hidden;
+    text-overflow:ellipsis;
+    line-height:1.5;
+}
+.note-toggle{
+    display:inline;
+    max-width:100%;
+    padding:0;
+    border:0;
+    background:transparent;
+    color:inherit;
+    font:inherit;
+    text-align:left;
+    cursor:pointer;
+}
+.note-toggle:hover{text-decoration:underline;color:var(--blue)}
+.note-cell.note-expanded{
+    white-space:normal !important;
+    max-width:260px;
+    overflow-wrap:anywhere;
+}
+.note-cell.note-expanded .note-toggle{white-space:pre-wrap;overflow-wrap:anywhere}
 .field input:focus,.field select:focus,.field textarea:focus{
     border-color:var(--blue);
     box-shadow:0 0 0 3px #2878bd16;
@@ -799,6 +829,7 @@ tbody tr.selected{background:#edf5ff}
     }
     .row-actions{justify-content:flex-end;flex-wrap:wrap}
     .row-btn{padding:9px 13px}
+    td.note-cell{max-width:none;width:100%;}
     .empty-cell{
         grid-column:1/-1!important;
         display:block!important;
@@ -1185,7 +1216,7 @@ tbody tr.selected{background:#edf5ff}
 
                 <div class="field">
                     <label for="studentNote">NOTE</label>
-                    <textarea id="studentNote" placeholder="Enter any additional note (optional)"></textarea>
+                    <textarea id="studentNote" wrap="soft" placeholder="Enter any additional note (optional)"></textarea>
                     <small>Optional remarks or additional information about the student.</small>
                 </div>
             </div>
@@ -1538,6 +1569,7 @@ const studentNoteField=document.getElementById("studentNote");
 
 // Automatically expand the NOTE field downward as more text is entered.
 function resizeStudentNote(){
+    // Keep the textarea at its normal width and increase only its height.
     studentNoteField.style.height="95px";
     studentNoteField.style.height=Math.max(95,studentNoteField.scrollHeight)+"px";
 }
@@ -1716,6 +1748,28 @@ function makeCell(label,value,className=""){
     return td;
 }
 
+function makeNoteCell(note){
+    const td=document.createElement("td");
+    td.dataset.label="Note";
+    td.className="note-cell";
+    const fullNote=String(note||"—");
+    const firstWord=(fullNote.trim().match(/^\S+/)||[fullNote])[0];
+    const toggle=document.createElement("button");
+    toggle.type="button";
+    toggle.className="note-toggle";
+    toggle.textContent=firstWord;
+    toggle.title="Click to show full note";
+    toggle.setAttribute("aria-expanded","false");
+    toggle.onclick=()=>{
+        const expanded=td.classList.toggle("note-expanded");
+        toggle.textContent=expanded?fullNote:firstWord;
+        toggle.title=expanded?"Click to hide full note":"Click to show full note";
+        toggle.setAttribute("aria-expanded",String(expanded));
+    };
+    td.appendChild(toggle);
+    return td;
+}
+
 function makeBadge(value,type){
     const badge=document.createElement("span");
     badge.className="status "+type;
@@ -1763,7 +1817,7 @@ function renderTable(){
             makeBadge(r.payment,r.payment==="Paid"?"paid":"not-paid")));
         tr.appendChild(makeCell("Extension Group",r.extension||"—"));
         tr.appendChild(makeCell("Trimester",r.trimester||"—"));
-        tr.appendChild(makeCell("Note",r.note||"—"));
+        tr.appendChild(makeNoteCell(r.note));
 
         const edit=document.createElement("button");
         edit.className="row-btn edit";
@@ -1899,7 +1953,7 @@ function renderArchive(){
         tr.appendChild(makeCell("Payment Status",makeBadge(r.payment,r.payment==="Paid"?"paid":"not-paid")));
         tr.appendChild(makeCell("Extension Group",r.extension||"—"));
         tr.appendChild(makeCell("Trimester",r.trimester||"—"));
-        tr.appendChild(makeCell("Note",r.note||"—"));
+        tr.appendChild(makeNoteCell(r.note));
         const restore=document.createElement("button");
         restore.className="row-btn restore";
         restore.innerHTML='<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/><path d="M12 7v5l3 2"/></svg>';
